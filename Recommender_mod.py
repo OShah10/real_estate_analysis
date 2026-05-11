@@ -8,7 +8,7 @@ from sklearn.preprocessing import StandardScaler
 
 
 
-training_data = pd.read_csv("Suitability_score_house.csv")
+training_data = pd.read_csv("Suitability_score_house.csv").dropna()
 K = 10
 X = training_data.drop(["status", "city", "brokered_by", 'prev_sold_date'], axis='columns')
 Y = training_data["Suitability"]
@@ -41,7 +41,7 @@ def predict_score(knn : NearestNeighbors, items, items_prescaled = False):
     pred_y = []
     #transform items using scaler
     if items_prescaled == False:
-            Scaler.transform(items)
+            items = Scaler.transform(items)
 
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")

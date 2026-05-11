@@ -6,6 +6,9 @@ from sklearn.neighbors import NearestNeighbors
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 import pathlib
+from sklearn.preprocessing import StandardScaler
+from Recommender_mod import Scaler, scaler_fit, scaler_transform
+
 
 """
 Retirement Home Recommender — Streamlit App
@@ -274,13 +277,18 @@ def train_models(df: pd.DataFrame):
 
     # KNN
     knn = NearestNeighbors(n_neighbors=10)
-    knn.fit(train_x)
+    scaler_fit(Scaler, train_x)
+    train_x_scaled = scaler_transform(train_x)
+    knn.fit(train_x_scaled)
 
     return lr, knn, train_x, train_y, lr_r2
 
 
 def knn_predict(knn, train_x, train_y, query_rows):
     preds = []
+    query_rows =  pd.DataFrame(data = scaler_transform(query_rows), columns=query_rows.columns, index= query_rows.index)#scale data
+    print("Went off w/o a hitch")
+    print(query_rows.head())
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         for _, row in query_rows.iterrows():

@@ -1,18 +1,25 @@
 import streamlit as st
 import pandas as pd
 from sklearn.linear_model import LinearRegression
-from Recommender_mod import knn,train_knn, predict_score
+from Recommender_mod import knn,train_knn, predict_score, train, scaler_fit, scaler_transform, Scaler
+
 
 # Load data from your own file path
-df = pd.read_csv("/Users/katherineskarda/PycharmProjects/IntroToAI/real_estate_analysis/Suitability_score_house.csv")
+df = pd.read_csv("Suitability_score_house.csv")
 
 # Prepare model
+df = df.dropna()
 X = df.drop(["status", "city", "brokered_by", "zip_code", "prev_sold_date"], axis=1)
+
 y = df["Suitability"]
 
 model = LinearRegression()
 model.fit(X, y)
-
+#train KNN
+#scale data
+scaler_fit(Scaler, train)
+train_scaled = scaler_transform(train)
+train_knn(train_scaled)
 # UI
 st.title("🏡 Retirement Home Finder")
 
@@ -29,8 +36,8 @@ def recommend(df, budget, zipcode):
 
     if subset.empty:
         return None
-
-    subset["pred"] = model.predict(subset[X.columns])
+    
+    subset["pred"] = predict_score(knn,subset[X.columns])
     return subset.sort_values("pred", ascending=False).head(5)
 
 
